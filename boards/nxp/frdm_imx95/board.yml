@@ -1,0 +1,6 @@
+board:
+  name: frdm_imx95
+  full_name: FRDM i.MX95
+  vendor: nxp
+  socs:
+  - name: mimx9596

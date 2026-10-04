@@ -1,0 +1,46 @@
+// SPDX-License-Identifier: Apache-2.0
+/dts-v1/;
+
+#include <nxp/imx/nxp_imx95_m7.dtsi>
+#include <nxp/nxp_imx/mimx9596cvtxn-pinctrl.dtsi>
+/* Common SoC GPIO references require the same fallback as the 15x15 EVK. */
+#include <nxp/nxp_imx/mimx9596avzxn-pinctrl.dtsi>
+
+/ {
+	model = "NXP FRDM i.MX95 (M7)";
+	compatible = "nxp,frdm-imx95";
+
+	chosen {
+		/* Linux remoteproc loads the ELF into M7 TCM; no flash image. */
+		zephyr,flash = &itcm;
+		zephyr,sram = &dtcm;
+		zephyr,console = &lpuart3;
+		zephyr,shell-uart = &lpuart3;
+	};
+};
+
+&pinctrl {
+	lpuart3_default: lpuart3_default {
+		group0 {
+			pinmux = <&iomuxc_gpio_io15_lpuart_rx_lpuart3_rx>,
+				 <&iomuxc_gpio_io14_lpuart_tx_lpuart3_tx>;
+			bias-pull-up;
+			slew-rate = "slightly_fast";
+			drive-strength = "x4";
+		};
+	};
+};
+
+&lpuart3 {
+	status = "okay";
+	current-speed = <115200>;
+	pinctrl-0 = <&lpuart3_default>;
+	pinctrl-names = "default";
+	/* Polling console: do not claim Linux eDMA resources. */
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
+};
+
+&lptmr1 {
+	status = "okay";
+};
